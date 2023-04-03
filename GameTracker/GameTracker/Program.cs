@@ -12,6 +12,7 @@ class Program
 
         // Ruta del archivo de texto
         string filePath = @"U:\hlocal\UAj\events.txt";
+        string pruebitaSergioPrueba = @"U:\hlocal\UAj\events.txt";
         StreamWriter writer = new StreamWriter(filePath);
         // Escribir texto en archivo de texto
 
