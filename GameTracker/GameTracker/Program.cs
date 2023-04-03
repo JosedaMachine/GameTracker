@@ -16,8 +16,10 @@ class Program
         StreamWriter writer = new StreamWriter(filePath);
         // Escribir texto en archivo de texto
 
-        TrackerSystem tracker = new TrackerSystem("NeonRider", "1", "Joseda");
 
+        TrackerSystem.Init("NeonRider", "1", "Joseda");
+
+        TrackerSystem tracker = TrackerSystem.GetInstance();
         tracker.Start();
 
 

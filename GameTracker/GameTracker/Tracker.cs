@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +11,34 @@ namespace Test
 {
     class TrackerSystem
     {
-        public TrackerSystem(string gameID, string gameSession, string user){
+
+        private static TrackerSystem instance = null;
+
+        public static TrackerSystem GetInstance() => instance;
+
+        public TrackerSystem(){
+
+        }
+
+        public static bool Init(string gameID, string gameSession, string user){
+            Debug.Assert(instance == null);
+
+            instance = new TrackerSystem();
+
+            if (!instance.initPrivate(gameID, gameSession, user)){
+                instance = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool initPrivate(string gameID, string gameSession, string user){
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
+
+            return true;
         }
 
         public void Start(){
