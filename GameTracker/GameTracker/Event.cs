@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Test {
+namespace Tracker
+{
     enum CaseType
     {
         START,
@@ -60,7 +61,7 @@ namespace Test {
         public EventArgs eventArgs;
     }
 
-    internal class Event {
+    class Event {
         public CaseType caseType_;
         public Case_Union case_;
     }
