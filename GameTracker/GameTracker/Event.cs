@@ -14,12 +14,12 @@ namespace Test {
 
     struct StartArgs
     {
-        public StartArgs()
-        {
-            userName_ = "";
-            sessionID_ = "";
-            gameID_ = "";
-        }
+        //public StartArgs()
+        //{
+        //    userName_ = "";
+        //    sessionID_ = "";
+        //    gameID_ = "";
+        //}
 
         public StartArgs(string userName, string sessionID, string gameID)
         {
@@ -32,10 +32,10 @@ namespace Test {
     }
     struct EventArgs
     {
-        public EventArgs()
-        {
-            eventDescription_ = "";
-        }
+        //public EventArgs()
+        //{
+        //    eventDescription_ = "";
+        //}
 
         public EventArgs(string eventDescription)
         {
@@ -46,10 +46,10 @@ namespace Test {
     }
 
     struct Case_Union {
-        public Case_Union() {
-            startParams = new StartArgs();
-            eventArgs = new EventArgs();
-        }
+        //public Case_Union() {
+        //    startParams = new StartArgs();
+        //    eventArgs = new EventArgs();
+        //}
 
         public Case_Union(Case_Union other) {
             startParams = other.startParams;
