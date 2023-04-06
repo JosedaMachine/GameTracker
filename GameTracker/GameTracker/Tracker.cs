@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,21 +12,19 @@ namespace GameTracker
 {
     class TrackerSystem
     {
-
         private static TrackerSystem instance = null;
-
         public static TrackerSystem GetInstance() => instance;
 
-        public TrackerSystem(){
+        public TrackerSystem() {
 
         }
 
-        public static bool Init(string gameID, string gameSession, string user){
+        public static bool Init(string gameID, string gameSession, string user) {
             Debug.Assert(instance == null);
 
             instance = new TrackerSystem();
 
-            if (!instance.initPrivate(gameID, gameSession, user)){
+            if (!instance.initPrivate(gameID, gameSession, user)) {
                 instance = null;
                 return false;
             }
@@ -33,7 +32,7 @@ namespace GameTracker
             return true;
         }
 
-        private bool initPrivate(string gameID, string gameSession, string user){
+        private bool initPrivate(string gameID, string gameSession, string user) {
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
@@ -41,7 +40,7 @@ namespace GameTracker
             return true;
         }
 
-        public void Start(){
+        public void Start() {
             queue_ = new ConcurrentQueue<Event>();
 
             Event start = new Event();
@@ -65,7 +64,7 @@ namespace GameTracker
         }
 
         //Consumidor
-        private void Process(){
+        private void Process() {
             Event result;
             if (!queue_.TryPeek(out result))
             {
@@ -76,9 +75,22 @@ namespace GameTracker
             //    Console.WriteLine("CQ: Expected TryPeek result of 0, got {0}", result);
             //}
         }
+        
+        private void PersistEvents()
+        {
+            while (queue_.Count >0)
+            {
+                Event e;
+                if(queue_.TryDequeue(out e))
+                {
+                    persistance.flush();
+                }
+            }
+        }
 
         string gameID_, gameSession_, user_;
         ConcurrentQueue<Event> queue_;
+        private IPersistence persistance;
     }
 }
 
