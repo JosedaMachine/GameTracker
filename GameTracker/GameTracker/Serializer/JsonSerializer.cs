@@ -8,12 +8,11 @@ namespace GameTracker
 {
     class JsonSerializer : ISerializer
     {
-        //TODO: cambiar a Tracker event
-        string ISerializer.serialize(Event e)
+        string ISerializer.serialize(TrackerEvent e)
         {
-            //TODO: pedirselo a la persitencia
-
             return e.toJson();
         }
+
+        string ISerializer.getName() { return "data.json"; }
     }
 }

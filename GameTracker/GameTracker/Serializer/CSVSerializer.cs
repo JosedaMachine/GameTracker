@@ -4,11 +4,12 @@ namespace GameTracker
 {
     internal class CSVSerializer : ISerializer
     {
-        //TODO: cambiar a Tracker event
-        string ISerializer.serialize(Event e)
+    
+        string ISerializer.serialize(TrackerEvent e)
         {
-            //TODO: pedirselo a la persitencia + ponerlo en csv
-            return e.toJson();
+            return e.toCSV();
         }
+
+        string ISerializer.getName() { return "data.csv"; }
     }
 }

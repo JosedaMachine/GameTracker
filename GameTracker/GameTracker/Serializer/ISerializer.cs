@@ -10,5 +10,8 @@ namespace GameTracker
     {
         //TODO: cambiar a TrackerEvent
         string serialize(Event e);
+
+
+        string getName();
     }
 }
