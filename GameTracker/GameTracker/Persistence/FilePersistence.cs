@@ -13,29 +13,36 @@ namespace GameTracker
         FilePersistence()
         {
             fileData = "";
+
+            serializer = new JsonSerializer();
         }
 
         public void send(TrackerEvent e)
         {
-            serializer = new JsonSerializer();
-
-            fileData += serializer.serialize(e);
+           fileData += serializer.serialize(e);
         }
 
         public void flush()
         {
-            // Abrir el archivo en modo append
-            StreamWriter outputFile = new StreamWriter(path+"data", true);
+            try
+            {
+                // Abrir el archivo en modo append
+                StreamWriter outputFile = new StreamWriter(path + serializer.getName(), true);
 
-            //Escribir contenido
-            outputFile.WriteLine(fileData);
+                //Escribir contenido
+                outputFile.WriteLine(fileData);
 
-            Console.WriteLine("Fichero escrito");
+                Console.WriteLine("Fichero escrito");
 
-            outputFile.Close();
+                outputFile.Close();
 
-            //Reestablecer cadena que guarda los eventos
-            fileData = "";
+                //Reestablecer cadena que guarda los eventos
+                fileData = "";
+            }
+            catch (System.IO.IOException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

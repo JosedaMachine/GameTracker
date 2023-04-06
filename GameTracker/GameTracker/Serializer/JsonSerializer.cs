@@ -10,7 +10,7 @@ namespace GameTracker
     {
         string ISerializer.serialize(TrackerEvent e)
         {
-            return e.toJson();
+            return e.toJSON();
         }
 
         string ISerializer.getName() { return "data.json"; }
