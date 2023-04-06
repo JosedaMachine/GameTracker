@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    class CSVSerializer
+    class JsonSerializer : ISerializer
     {
         //TODO: cambiar a Tracker event
-        virtual string serialize(Event e)
+        string ISerializer.serialize(Event e)
         {
             //TODO: pedirselo a la persitencia
 
-            
+            return e.toJson();
         }
     }
 }

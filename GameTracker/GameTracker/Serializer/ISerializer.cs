@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    class Serializer
+    interface ISerializer
     {
         //TODO: cambiar a TrackerEvent
-        virtual string serialize(Event e);
+        string serialize(Event e);
     }
 }
