@@ -20,7 +20,7 @@ namespace GameTracker
         private CommonContent commonContent_;
 
         //For serialization purposes, we need a string event type.
-        string eventType_;
+        protected string eventType_;
 
         public TrackerEvent(CommonContent common)
         {

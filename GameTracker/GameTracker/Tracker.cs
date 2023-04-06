@@ -41,31 +41,40 @@ namespace GameTracker
         }
 
         public void Start() {
-            queue_ = new ConcurrentQueue<Event>();
+            queue_ = new ConcurrentQueue<TrackerEvent>();
 
-            Event start = new Event();
-            start.caseType_ = CaseType.START;
-            start.case_ = new Case_Union();
-            start.case_.startParams = new StartArgs(gameID_, gameSession_, user_);
+            CommonContent common = new CommonContent();
+
+            common.sessionID = "12";
+            common.gameID = "Apex";
+            common.time_stamp = 1123132132;
+            common.userID = "Joseda";
+
+            TrackerEvent start = new TrackerEvent(common);
+
             queue_.Enqueue(start);
 
             //Consumir hasta que no haya nada mas??¿?¿?¿
             Parallel.Invoke(Process);
         }
 
-        public void addEvent(string event_)
-        {
-            Event start = new Event();
-            start.caseType_ = CaseType.EVENT;
-            start.case_ = new Case_Union();
-            start.case_.eventArgs = new EventArgs(event_);
+        public void addEvent(string event_){
 
+            CommonContent common = new CommonContent();
+
+            common.sessionID = "12";
+            common.gameID = "Apex";
+            common.time_stamp = 1123132132;
+            common.userID = "Joseda";
+
+            TrackerEvent start = new TrackerEvent(common);
+   
             queue_.Enqueue(start);
         }
 
         //Consumidor
         private void Process() {
-            Event result;
+            TrackerEvent result;
             if (!queue_.TryPeek(out result))
             {
                 Console.WriteLine("CQ: TryPeek failed when it should have succeeded");
@@ -80,7 +89,7 @@ namespace GameTracker
         {
             while (queue_.Count >0)
             {
-                Event e;
+                TrackerEvent e;
                 if(queue_.TryDequeue(out e))
                 {
                     persistance.send(e);
@@ -90,7 +99,7 @@ namespace GameTracker
         }
 
         string gameID_, gameSession_, user_;
-        ConcurrentQueue<Event> queue_;
+        ConcurrentQueue<TrackerEvent> queue_;
         private IPersistence persistance;
     }
 }
