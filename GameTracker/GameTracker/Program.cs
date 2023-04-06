@@ -58,11 +58,24 @@ class Program
         commonContent.time_stamp = 1123132132;
         commonContent.userID = "Joseda";
 
-        TrackerEvent e = new TrackerEvent(commonContent);
+        InitSessionEvent initS_E = new InitSessionEvent(commonContent);
+        InitlLevelEvent initL_E = new InitlLevelEvent(commonContent);
+        FinishlLevelEvent finishL_E = new FinishlLevelEvent(commonContent);
+        FinishSessionEvent finishS_E = new FinishSessionEvent(commonContent);
+
+        string json = initS_E.toJSON();
+        json = json + initL_E.toJSON();
+        json = json + finishL_E.toJSON();
+        json = json + finishS_E.toJSON();
+
+        string csv = initS_E.toCSV();
+        csv = csv + initL_E.toCSV();
+        csv = csv + finishL_E.toCSV();
+        csv = csv + finishS_E.toCSV();
 
 
-        Console.WriteLine(e.toJSON());
-        Console.WriteLine(e.toCSV());
+        Console.WriteLine(json);
+        Console.WriteLine(csv);
 
         //// Iniciar hilo para leer números de la cola
         //Thread readerThread = new Thread(ReadFromQueue);

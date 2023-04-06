@@ -8,39 +8,35 @@ using System.Text.Json;
 
 namespace GameTracker
 {
-    internal class InitSessionEvent : TrackerEvent
+    internal class FinishlLevelEvent : TrackerEvent
     {
-        public InitSessionEvent(CommonContent common) : base(common){
-            eventType_ = "Init Session";
+        public FinishlLevelEvent(CommonContent common) : base(common){
+            eventType_ = "Finish Level";
         }
 
         public override string toCSV()
         {
-            //Init de CSV
-            string legend = "GameID,SessionID,UserID,TimeStamp,EventType,Params\n";
-
-            //Base information
             string format = base.toCSV();
 
+            //formatear los datos
+            format += ",Satanic Alberto";
 
-            return legend + format + "\n";
+            return  format + "\n";
         }
 
         public override string toJSON()
         {
-            //Init de JSON
-            string open = "[\n";
-
             //Base information
             string format = base.toJSON();
 
             //collection data
             var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(format);
 
+            //Add data
+            data["Level"] = "Satanic Alberto";
+
             // Serialize collection with new data
             string newColleciton = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
-
-            newColleciton = open + newColleciton;
 
             newColleciton += ",\n";
 

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using System.Text.Json;
 
 namespace GameTracker
 {
@@ -47,14 +48,27 @@ namespace GameTracker
         /// </summary>
         /// <returns>string CSV format</returns>
         public virtual string toJSON(){
-            string format = "{ " +
-                "\"GameID\": \"" + commonContent_.gameID + "\"," +
-                "\"SessionID\": \"" + commonContent_.sessionID + "\"," +
-                "\"UserID\": \"" + commonContent_.userID + "\"," +
-                "\"TimeStamp\": \"" + commonContent_.time_stamp + "\"," +
-                "\"EventType\": \"" + eventType_ + "\","; 
-                //TODO : decir que falta cerra con esto:+"},";
-            return format;
+
+            var datos = new
+            {
+                GameID = commonContent_.gameID,
+                SessionID = commonContent_.sessionID,
+                UserID = commonContent_.userID,
+                TimeStamp = commonContent_.time_stamp,
+                EventType = eventType_
+            };
+
+            // Serializar el objeto a una cadena JSON con formato indentado
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(datos, new JsonSerializerOptions { WriteIndented = true });
+
+            //string format = "{ " +
+            //    "\"GameID\": \"" + commonContent_.gameID + "\"," +
+            //    "\"SessionID\": \"" + commonContent_.sessionID + "\"," +
+            //    "\"UserID\": \"" + commonContent_.userID + "\"," +
+            //    "\"TimeStamp\": \"" + commonContent_.time_stamp + "\"," +
+            //    "\"EventType\": \"" + eventType_ + "\","; 
+
+            return jsonString;
         }
     }
 }
