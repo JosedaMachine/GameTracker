@@ -9,7 +9,7 @@ namespace GameTracker
             throw new NotImplementedException();
         }
 
-        public void send(Event e)
+        public void send(TrackerEvent e)
         {
             throw new NotImplementedException();
         }

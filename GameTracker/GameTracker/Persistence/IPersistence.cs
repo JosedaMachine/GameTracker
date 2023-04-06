@@ -5,10 +5,7 @@ namespace GameTracker
 {
     interface IPersistence
     {
-        //Serializer;
-
-        // TODO: Cambiar a TrackerEvent
-        void send(Event e);
+        void send(TrackerEvent e);
         void flush();
 
     }
