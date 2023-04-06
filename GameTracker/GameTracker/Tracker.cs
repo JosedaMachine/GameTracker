@@ -83,9 +83,10 @@ namespace GameTracker
                 Event e;
                 if(queue_.TryDequeue(out e))
                 {
-                    persistance.flush();
+                    persistance.send(e);
                 }
             }
+            persistance.flush();
         }
 
         string gameID_, gameSession_, user_;
