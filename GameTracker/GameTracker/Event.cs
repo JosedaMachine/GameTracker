@@ -64,5 +64,14 @@ namespace GameTracker
     class Event {
         public CaseType caseType_;
         public Case_Union case_;
+        
+
+        //TODO: cambiarlo
+        public virtual string toJson()
+        {
+            string msg = "";
+
+            return msg;
+        }
     }
 }
