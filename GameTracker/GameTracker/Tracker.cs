@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Collections.Specialized.BitVector32;
 
-namespace Test
+namespace GameTracker
 {
     class TrackerSystem
     {
