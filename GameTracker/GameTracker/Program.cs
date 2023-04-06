@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.IO;
-//using Test;
+using GameTracker;
 
 class Program
 {
@@ -51,44 +51,57 @@ class Program
 
     static void Main()
     {
-        // Iniciar hilo para leer números de la cola
-        Thread readerThread = new Thread(ReadFromQueue);
-        readerThread.Start();
 
-        Console.WriteLine("Introduce números para sumar (0 para salir):");
+        CommonContent commonContent = new CommonContent();
+        commonContent.sessionID = "12";
+        commonContent.gameID = "Apex";
+        commonContent.time_stamp = 1123132132;
+        commonContent.userID = "Joseda";
 
-        while (true)
-        {
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out int number))
-            {
-                if (number == 0)
-                    break;
+        TrackerEvent e = new TrackerEvent(commonContent);
 
-                // Agregar número a la cola
-                queue.Enqueue(number);
-            }
-            else
-            {
-                Console.WriteLine("¡Por favor, introduce un número válido!");
-            }
-        }
 
-        // Esperar a que se vacíe la cola antes de finalizar
-        while (!queue.IsEmpty)
-        {
-            Thread.Sleep(100);
-        }
+        Console.WriteLine(e.toJSON());
+        Console.WriteLine(e.toCSV());
 
-        // Indicar que el hilo debe finalizar
-        stop = true;
+        //// Iniciar hilo para leer números de la cola
+        //Thread readerThread = new Thread(ReadFromQueue);
+        //readerThread.Start();
 
-        // Esperar a que el hilo termine
-        readerThread.Join();
+        //Console.WriteLine("Introduce números para sumar (0 para salir):");
 
-        Console.WriteLine($"La suma total es: {sum}");
-        Console.WriteLine("Presiona cualquier tecla para salir.");
-        Console.ReadKey();
+        //while (true)
+        //{
+        //    string input = Console.ReadLine();
+        //    if (int.TryParse(input, out int number))
+        //    {
+        //        if (number == 0)
+        //            break;
+
+        //        // Agregar número a la cola
+        //        queue.Enqueue(number);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("¡Por favor, introduce un número válido!");
+        //    }
+        //}
+
+        //// Esperar a que se vacíe la cola antes de finalizar
+        //while (!queue.IsEmpty)
+        //{
+        //    Thread.Sleep(100);
+        //}
+
+        //// Indicar que el hilo debe finalizar
+        //stop = true;
+
+        //// Esperar a que el hilo termine
+        //readerThread.Join();
+
+        //Console.WriteLine($"La suma total es: {sum}");
+        //Console.WriteLine("Presiona cualquier tecla para salir.");
+        //Console.ReadKey();
     }
 
     static void ReadFromQueue()
