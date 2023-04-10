@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace GameTracker
 {
@@ -26,14 +27,16 @@ namespace GameTracker
             //Base information
             string format = base.toJSON();
 
-            //extract collection data
-            var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(format);
+            //collection data
+            var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(format);
+
+            //Add data
+            data["Level"] = "Satanic Alberto";
 
             // Serialize collection with new data
-            string newCollection = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+            string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
-            //Close file
-            newCollection += "\n]";
+            newCollection += ",\n";
 
             return newCollection;
         }
