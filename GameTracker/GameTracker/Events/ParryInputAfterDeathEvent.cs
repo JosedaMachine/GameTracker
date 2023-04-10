@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace GameTracker
 {
-    internal class ObtainRedPowerUp : TrackerEvent
+    internal class ParryInputAfterDeath : TrackerEvent
     {
-        public ObtainRedPowerUp(CommonContent common) : base(common)
+        short level;
+        public ParryInputAfterDeath(CommonContent common) : base(common)
         {
-            eventType_ = "RedPowerUpObtained";
+            eventType_ = "ParryInputAfterDeath";
         }
 
         public override string toCSV()
@@ -31,7 +29,7 @@ namespace GameTracker
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(format);
 
             //Add data
-            data["Level"] = "Satanic Alberto";
+            data["Level"] = level;
 
             // Serialize collection with new data
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
@@ -41,5 +39,9 @@ namespace GameTracker
             return newCollection;
         }
 
+        public void setLevel(short level_)
+        {
+            level = level_;
+        }
     }
 }

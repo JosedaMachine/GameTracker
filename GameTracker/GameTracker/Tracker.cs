@@ -41,6 +41,7 @@ namespace GameTracker
             return true;
         }
 
+        //Sets common parameters for every event
         private CommonContent setCommonContent()
         {
             CommonContent common = new CommonContent();
@@ -60,7 +61,7 @@ namespace GameTracker
 
             queue_.Enqueue(start);
 
-            //Consumir hasta que no haya nada mas??¿?¿?¿
+            //TODO: Consumir hasta que no haya nada mas??¿?¿?¿
             Parallel.Invoke(Process);
         }
 
@@ -90,14 +91,23 @@ namespace GameTracker
             persistance.flush();
         }
 
+        //Enqueues event
         public void trackEvent(TrackerEvent event_)
         {
             queue_.Enqueue(event_);
         }
 
 
-
+        // Creates ParryEvent
         public ParryEvent CreateParryEvent()
+        {
+            ParryEvent event_ = new ParryEvent(setCommonContent());
+
+            return event_;
+        }
+        
+        // Creates ObtainRedPowerUpEvent
+        public ParryEvent CreateObtainRedPowerUpEvent()
         {
             ParryEvent event_ = new ParryEvent(setCommonContent());
 
