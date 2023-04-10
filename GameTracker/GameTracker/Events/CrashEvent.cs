@@ -30,7 +30,7 @@ namespace GameTracker
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
             //Close file
-            newCollection += "\n]";
+            newCollection += "\n]\n}";
 
             return newCollection;
         }

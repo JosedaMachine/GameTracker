@@ -7,6 +7,10 @@ namespace GameTracker
 {
     internal class ParryEvent : TrackerEvent
     {
+
+        bool blocked, purplePowerUp;
+        short level;
+
         public ParryEvent(CommonContent common) : base(common){
             eventType_ = "Parry";
         }
@@ -28,16 +32,30 @@ namespace GameTracker
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(format);
 
             //Add data
-            data["Level"] = "Satanic Alberto";
+            data["Level"] = level;
+            data["Blocked"] = blocked;
+            data["PurplePowerUp"] = purplePowerUp;
 
             // Serialize collection with new data
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
             //Close file
-            newCollection += "\n]";
+            newCollection += ",\n";
 
             return newCollection;
         }
 
+        public void setLevel(short level_)
+        {
+            level = level_;
+        }
+        public void setPurplePowerUp(bool ppu_)
+        {
+            purplePowerUp = ppu_;
+        }
+        public void setBlocked(bool blocked_)
+        {
+            blocked = blocked_;
+        }
     }
 }

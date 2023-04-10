@@ -12,7 +12,7 @@ namespace GameTracker
         public string gameID { get; set; }
         public string sessionID { get; set; }
         public string userID { get; set; }
-        public int time_stamp { get; set; }
+        public long time_stamp { get; set; }
     }
 
 

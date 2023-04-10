@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace GameTracker
 {
@@ -36,40 +35,33 @@ namespace GameTracker
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             return true;
+        }
+
+        private CommonContent setCommonContent()
+        {
+            CommonContent common = new CommonContent();
+
+            common.sessionID = gameSession_;
+            common.gameID = gameID_;
+            common.time_stamp = stopwatch.ElapsedMilliseconds;
+            common.userID = user_;
+
+            return common;
         }
 
         public void Start() {
             queue_ = new ConcurrentQueue<TrackerEvent>();
 
-            CommonContent common = new CommonContent();
-
-            common.sessionID = "12";
-            common.gameID = "Apex";
-            common.time_stamp = 1123132132;
-            common.userID = "Joseda";
-
-            TrackerEvent start = new TrackerEvent(common);
+            TrackerEvent start = new TrackerEvent(setCommonContent());
 
             queue_.Enqueue(start);
 
             //Consumir hasta que no haya nada mas??¿?¿?¿
             Parallel.Invoke(Process);
-        }
-
-        public void addEvent(string event_){
-
-            CommonContent common = new CommonContent();
-
-            common.sessionID = "12";
-            common.gameID = "Apex";
-            common.time_stamp = 1123132132;
-            common.userID = "Joseda";
-
-            TrackerEvent start = new TrackerEvent(common);
-   
-            queue_.Enqueue(start);
         }
 
         //Consumidor
@@ -98,9 +90,24 @@ namespace GameTracker
             persistance.flush();
         }
 
+        public void trackEvent(TrackerEvent event_)
+        {
+            queue_.Enqueue(event_);
+        }
+
+
+
+        public ParryEvent CreateParryEvent()
+        {
+            ParryEvent event_ = new ParryEvent(setCommonContent());
+
+            return event_;
+        }
+
         string gameID_, gameSession_, user_;
         ConcurrentQueue<TrackerEvent> queue_;
         private IPersistence persistance;
+        Stopwatch stopwatch;
     }
 }
 
