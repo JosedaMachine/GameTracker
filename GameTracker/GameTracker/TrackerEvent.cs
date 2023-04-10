@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace GameTracker
 {
@@ -58,8 +58,8 @@ namespace GameTracker
                 EventType = eventType_
             };
 
-            // Serializar el objeto a una cadena JSON con formato indentado
-            string jsonString = System.Text.Json.JsonSerializer.Serialize(datos, new JsonSerializerOptions { WriteIndented = true });
+            // Serialize collection with new data
+            string jsonString = JsonConvert.SerializeObject(datos, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
             //string format = "{ " +
             //    "\"GameID\": \"" + commonContent_.gameID + "\"," +
