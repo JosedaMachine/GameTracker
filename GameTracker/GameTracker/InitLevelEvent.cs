@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace GameTracker
 {
@@ -30,17 +30,17 @@ namespace GameTracker
             string format = base.toJSON();
 
             //collection data
-            var data = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(format);
+            var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(format);
 
             //Add data
             data["Level"] = "Satanic Alberto";
 
             // Serialize collection with new data
-            string newColleciton = System.Text.Json.JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+            string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
 
-            newColleciton += ",\n";
+            newCollection += ",\n";
 
-            return newColleciton;
+            return newCollection;
         }
 
     }
