@@ -95,8 +95,6 @@ namespace GameTracker
                     persistence.send(e);
                 }
             }
-
-            Console.WriteLine("Me voy");
         }
 
         //Enqueues event
