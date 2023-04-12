@@ -6,11 +6,11 @@ namespace GameTracker
     internal class FilePersistence : IPersistence
     {
         ISerializer serializer;
-        const string path = "../Data/";
+        const string path = "";
 
         string fileData;
 
-        FilePersistence()
+        public FilePersistence()
         {
             fileData = "";
 

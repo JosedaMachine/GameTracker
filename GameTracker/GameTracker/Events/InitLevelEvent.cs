@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 
 namespace GameTracker
 {
-    internal class InitlLevelEvent : TrackerEvent
+    internal class InitLevelEvent : TrackerEvent
     {
-        public InitlLevelEvent(CommonContent common) : base(common){
+        public InitLevelEvent(CommonContent common) : base(common){
             eventType_ = "Init Level";
         }
 

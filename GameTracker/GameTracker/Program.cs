@@ -52,53 +52,95 @@ class Program
     static void Main()
     {
 
-        CommonContent commonContent = new CommonContent();
-        commonContent.sessionID = "12";
-        commonContent.gameID = "Apex";
-        commonContent.time_stamp = 1123132132;
-        commonContent.userID = "Joseda";
 
-        InitSessionEvent initS_E = new InitSessionEvent(commonContent);
-        InitlLevelEvent initL_E = new InitlLevelEvent(commonContent);
-        FinishlLevelEvent finishL_E = new FinishlLevelEvent(commonContent);
-        FinishSessionEvent finishS_E = new FinishSessionEvent(commonContent);
+        //CommonContent commonContent = new CommonContent();
+        //commonContent.sessionID = "12";
+        //commonContent.gameID = "Apex";
+        //commonContent.time_stamp = 1123132132;
+        //commonContent.userID = "Joseda";
 
-        string json = initS_E.toJSON();
-        json = json + initL_E.toJSON();
-        json = json + finishL_E.toJSON();
-        json = json + finishS_E.toJSON();
+        //InitSessionEvent initS_E = new InitSessionEvent(commonContent);
+        //InitlLevelEvent initL_E = new InitlLevelEvent(commonContent);
+        //FinishlLevelEvent finishL_E = new FinishlLevelEvent(commonContent);
+        //FinishSessionEvent finishS_E = new FinishSessionEvent(commonContent);
 
-        string csv = initS_E.toCSV();
-        csv = csv + initL_E.toCSV();
-        csv = csv + finishL_E.toCSV();
-        csv = csv + finishS_E.toCSV();
+        //string json = initS_E.toJSON();
+        //json = json + initL_E.toJSON();
+        //json = json + finishL_E.toJSON();
+        //json = json + finishS_E.toJSON();
+
+        //string csv = initS_E.toCSV();
+        //csv = csv + initL_E.toCSV();
+        //csv = csv + finishL_E.toCSV();
+        //csv = csv + finishS_E.toCSV();
 
 
-        Console.WriteLine(json);
-        Console.WriteLine(csv);
+        //Console.WriteLine(json);
+        //Console.WriteLine(csv);
 
-        //// Iniciar hilo para leer números de la cola
-        //Thread readerThread = new Thread(ReadFromQueue);
-        //readerThread.Start();
+        TrackerSystem.Init("NeonRider", "1", "Joseda");
 
-        //Console.WriteLine("Introduce números para sumar (0 para salir):");
+        TrackerSystem tracker = TrackerSystem.GetInstance();
+        tracker.Start();
 
-        //while (true)
-        //{
-        //    string input = Console.ReadLine();
-        //    if (int.TryParse(input, out int number))
-        //    {
-        //        if (number == 0)
-        //            break;
+        IPersistence persistence = new FilePersistence();
 
-        //        // Agregar número a la cola
-        //        queue.Enqueue(number);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("¡Por favor, introduce un número válido!");
-        //    }
-        //}
+
+        Console.WriteLine("Introduce números para sumar (0 para salir):");
+
+
+        //Inicio de sesion
+
+
+        while (true)
+        {
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int number))
+            {
+                TrackerEvent? e = null;
+
+                switch (number)
+                {
+                    case 0:
+                        //Inicio de partida
+                        e = tracker.CreateInitLevelEvent();
+                        break;
+                    case 1:
+                        //Lanzar parry
+                        e = tracker.CreateParryEvent();
+                        break;
+                    case 2:
+                        //Obtener powerUP rojo
+                        e = tracker.CreateObtainRedPowerUpEvent();
+                        break;
+                    case 3:
+                        e = tracker.CreateFinishLevelEvent();
+                        //Final de partida
+                        break;
+                    default:
+                        break;
+                }
+
+                if (e != null)
+                    tracker.trackEvent(e);
+
+                if (number == 0)
+                    break;
+
+                // Agregar número a la cola
+                queue.Enqueue(number);
+            }
+            else
+            {
+                Console.WriteLine("¡Por favor, introduce un número válido!");
+            }
+        }
+
+        //Final de sesion
+        tracker.Stop();
+
+        //Volcar el fichero en disco
+        tracker.Persist();
 
         //// Esperar a que se vacíe la cola antes de finalizar
         //while (!queue.IsEmpty)
@@ -106,11 +148,6 @@ class Program
         //    Thread.Sleep(100);
         //}
 
-        //// Indicar que el hilo debe finalizar
-        //stop = true;
-
-        //// Esperar a que el hilo termine
-        //readerThread.Join();
 
         //Console.WriteLine($"La suma total es: {sum}");
         //Console.WriteLine("Presiona cualquier tecla para salir.");

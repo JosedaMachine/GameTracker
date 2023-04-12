@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameTracker
@@ -17,6 +18,8 @@ namespace GameTracker
         public TrackerSystem() {
 
         }
+
+
 
         public static bool Init(string gameID, string gameSession, string user) {
             Debug.Assert(instance == null);
@@ -35,8 +38,12 @@ namespace GameTracker
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
+            
+
             stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            commonContent_ = new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds);
 
             return true;
         }
@@ -45,38 +52,46 @@ namespace GameTracker
         public void Start() {
             queue_ = new ConcurrentQueue<TrackerEvent>();
 
-            TrackerEvent start = new TrackerEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
+            TrackerEvent start = new TrackerEvent(commonContent_);
 
             queue_.Enqueue(start);
 
             //TODO: Consumir hasta que no haya nada mas??¿?¿?¿
-            Parallel.Invoke(Process);
+            //Parallel.Invoke(Process);
+
+            dequeueEvents_thread = new Thread(SerializeEvents);
+            dequeueEvents_thread.Start();
         }
 
-        //Consumidor
-        private void Process() {
-            TrackerEvent result;
-            if (!queue_.TryPeek(out result))
-            {
-                Console.WriteLine("CQ: TryPeek failed when it should have succeeded");
-            }
-            //else if (result != )
+        public void Stop()
+        {
+            dequeueEvents_thread.Join();
+            
+        }
+
+        public void Persist() {
+            //Deberia ser en una hebra distinta el volcado???
+
+
+            //TrackerEvent result;
+            //if (!queue_.TryPeek(out result))
             //{
-            //    Console.WriteLine("CQ: Expected TryPeek result of 0, got {0}", result);
+            //    Console.WriteLine("CQ: TryPeek failed when it should have succeeded");
             //}
+            persistence.flush();
         }
         
-        private void PersistEvents()
+        //Consumer.
+        private void SerializeEvents()
         {
             while (queue_.Count >0)
             {
                 TrackerEvent e;
                 if(queue_.TryDequeue(out e))
                 {
-                    persistance.send(e);
+                    persistence.send(e);
                 }
             }
-            persistance.flush();
         }
 
         //Enqueues event
@@ -89,23 +104,56 @@ namespace GameTracker
         // Creates ParryEvent
         public ParryEvent CreateParryEvent()
         {
-            ParryEvent event_ = new ParryEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
+            ParryEvent event_ = new ParryEvent(commonContent_);
 
             return event_;
         }
         
         // Creates ObtainRedPowerUpEvent
-        public ParryEvent CreateObtainRedPowerUpEvent()
+        public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
         {
-            ParryEvent event_ = new ParryEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
+            ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(commonContent_);
+
+            return event_;
+        }
+
+        // Creates initial session event
+        public InitSessionEvent CreateInitSessionEvent(){
+            InitSessionEvent event_ = new InitSessionEvent(commonContent_);
+
+            return event_;
+        }
+
+        // Creates initial session event
+        public InitLevelEvent CreateInitLevelEvent()
+        {
+            InitLevelEvent event_ = new InitLevelEvent(commonContent_);
+
+            return event_;
+        }
+
+        // Creates finish session event
+        public FinishSessionEvent CreateFinishSessionEvent()
+        {
+            FinishSessionEvent event_ = new FinishSessionEvent(commonContent_);
+
+            return event_;
+        }
+
+        // Creates finish level event
+        public FinishLevelEvent CreateFinishLevelEvent()
+        {
+            FinishLevelEvent event_ = new FinishLevelEvent(commonContent_);
 
             return event_;
         }
 
         string gameID_, gameSession_, user_;
         ConcurrentQueue<TrackerEvent> queue_;
-        private IPersistence persistance;
+        private IPersistence persistence;
         Stopwatch stopwatch;
+        Thread dequeueEvents_thread;
+        CommonContent commonContent_;
     }
 }
 
