@@ -7,6 +7,7 @@ namespace GameTracker
     internal class ParryInputAfterDeath : TrackerEvent
     {
         short level;
+        float timeAfterDeath;
         public ParryInputAfterDeath(CommonContent common) : base(common)
         {
             eventType_ = "ParryInputAfterDeath";
@@ -42,6 +43,11 @@ namespace GameTracker
         public void setLevel(short level_)
         {
             level = level_;
+        }
+
+        public void setTimeAfterDeath(float time)
+        {
+            timeAfterDeath = time;
         }
     }
 }

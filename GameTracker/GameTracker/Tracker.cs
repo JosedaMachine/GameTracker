@@ -113,6 +113,13 @@ namespace GameTracker
 
             return event_;
         }
+
+        public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
+        {
+            ParryInputAfterDeath event_ = new ParryInputAfterDeath(commonContent_);
+
+            return event_;
+        }
         
         // Creates ObtainRedPowerUpEvent
         public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
