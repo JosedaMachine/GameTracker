@@ -95,9 +95,9 @@ namespace GameTracker
         }
         
         // Creates ObtainRedPowerUpEvent
-        public ParryEvent CreateObtainRedPowerUpEvent()
+        public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
         {
-            ParryEvent event_ = new ParryEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
+            ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(setCommonContent());
 
             return event_;
         }
