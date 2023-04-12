@@ -54,13 +54,6 @@ namespace GameTracker
         public void Start() {
             queue_ = new ConcurrentQueue<TrackerEvent>();
 
-            TrackerEvent start = new TrackerEvent(commonContent_);
-
-            queue_.Enqueue(start);
-
-            //TODO: Consumir hasta que no haya nada mas??¿?¿?¿
-            //Parallel.Invoke(Process);
-
             dequeueEvents_thread = new Thread(SerializeEvents);
             dequeueEvents_thread.Start();
         }
