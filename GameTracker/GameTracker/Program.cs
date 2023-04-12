@@ -88,10 +88,12 @@ class Program
 
         Console.WriteLine("Introduce números para sumar (0 para salir):");
 
-
         //Inicio de sesion
 
 
+
+        InitSessionEvent initE = tracker.CreateInitSessionEvent();
+        tracker.trackEvent(initE);
         while (true)
         {
             string input = Console.ReadLine();
@@ -101,19 +103,19 @@ class Program
 
                 switch (number)
                 {
-                    case 0:
+                    case 1:
                         //Inicio de partida
                         e = tracker.CreateInitLevelEvent();
                         break;
-                    case 1:
+                    case 2:
                         //Lanzar parry
                         e = tracker.CreateParryEvent();
                         break;
-                    case 2:
+                    case 3:
                         //Obtener powerUP rojo
                         e = tracker.CreateObtainRedPowerUpEvent();
                         break;
-                    case 3:
+                    case 4:
                         e = tracker.CreateFinishLevelEvent();
                         //Final de partida
                         break;
@@ -137,6 +139,10 @@ class Program
         }
 
         //Final de sesion
+        FinishSessionEvent finishE = tracker.CreateFinishSessionEvent();
+        tracker.trackEvent(finishE);
+
+        //Parar
         tracker.Stop();
 
         //Volcar el fichero en disco
@@ -147,11 +153,6 @@ class Program
         //{
         //    Thread.Sleep(100);
         //}
-
-
-        //Console.WriteLine($"La suma total es: {sum}");
-        //Console.WriteLine("Presiona cualquier tecla para salir.");
-        //Console.ReadKey();
     }
 
     static void ReadFromQueue()

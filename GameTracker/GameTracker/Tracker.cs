@@ -38,7 +38,9 @@ namespace GameTracker
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
-            
+
+            //TODO: Esto es una mierda hay que sacarlo de aqui.
+            persistence = new FilePersistence();
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -65,6 +67,7 @@ namespace GameTracker
 
         public void Stop()
         {
+            stop = true;
             dequeueEvents_thread.Join();
             
         }
@@ -84,7 +87,7 @@ namespace GameTracker
         //Consumer.
         private void SerializeEvents()
         {
-            while (queue_.Count >0)
+            while (queue_.Count > 0 || !stop)
             {
                 TrackerEvent e;
                 if(queue_.TryDequeue(out e))
@@ -92,6 +95,8 @@ namespace GameTracker
                     persistence.send(e);
                 }
             }
+
+            Console.WriteLine("Me voy");
         }
 
         //Enqueues event
@@ -154,27 +159,9 @@ namespace GameTracker
         Stopwatch stopwatch;
         Thread dequeueEvents_thread;
         CommonContent commonContent_;
+        private bool stop;
     }
 }
-
-//class ThreadTest
-//{
-//    static bool done;
-
-//    //static void Main()
-//    //{
-//    //    Thread t = new Thread(Go);          // Kick off a new thread
-//    //    t.Start();                               // running WriteY()
-
-
-//    //    Go();
-//    //}
-
-//    static void Go()
-//    {
-//        if (!done) { Console.WriteLine("Done"); done = true; }
-//    }
-//}
 
 
 
