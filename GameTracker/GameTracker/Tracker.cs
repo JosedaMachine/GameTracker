@@ -41,23 +41,11 @@ namespace GameTracker
             return true;
         }
 
-        //Sets common parameters for every event
-        private CommonContent setCommonContent()
-        {
-            CommonContent common = new CommonContent();
-
-            common.sessionID = gameSession_;
-            common.gameID = gameID_;
-            common.time_stamp = stopwatch.ElapsedMilliseconds;
-            common.userID = user_;
-
-            return common;
-        }
 
         public void Start() {
             queue_ = new ConcurrentQueue<TrackerEvent>();
 
-            TrackerEvent start = new TrackerEvent(setCommonContent());
+            TrackerEvent start = new TrackerEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
 
             queue_.Enqueue(start);
 
@@ -101,7 +89,7 @@ namespace GameTracker
         // Creates ParryEvent
         public ParryEvent CreateParryEvent()
         {
-            ParryEvent event_ = new ParryEvent(setCommonContent());
+            ParryEvent event_ = new ParryEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
 
             return event_;
         }
@@ -109,7 +97,7 @@ namespace GameTracker
         // Creates ObtainRedPowerUpEvent
         public ParryEvent CreateObtainRedPowerUpEvent()
         {
-            ParryEvent event_ = new ParryEvent(setCommonContent());
+            ParryEvent event_ = new ParryEvent(new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds));
 
             return event_;
         }

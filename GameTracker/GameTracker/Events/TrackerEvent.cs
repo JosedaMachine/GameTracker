@@ -13,6 +13,14 @@ namespace GameTracker
         public string sessionID { get; set; }
         public string userID { get; set; }
         public long time_stamp { get; set; }
+
+        public CommonContent(string gID, string sID,string uID, long time)
+        {
+            gameID = gID;
+            sessionID = sID;
+            userID = uID;
+            time_stamp = time;
+        }
     }
 
 
