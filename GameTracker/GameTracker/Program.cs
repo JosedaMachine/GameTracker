@@ -78,8 +78,12 @@ class Program
         //Console.WriteLine(json);
         //Console.WriteLine(csv);
 
-        TrackerSystem.Init("NeonRider", "1", "Joseda");
 
+        //Strategy
+
+        TrackerSystem.Init("Game", "1", "Player");
+
+        
         TrackerSystem tracker = TrackerSystem.GetInstance();
         tracker.Start();
 

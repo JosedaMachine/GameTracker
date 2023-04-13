@@ -1,0 +1,14 @@
+1. Es buena idea la apertura de llaves usando un evento de inicio de sesion? ta fino
+
+2. registrar multiples clases de persistencia, con template? O hacer una lista de IPersistence e ir añadiendo a dicha lista. ADD
+
+3. La creacion de un evento deberia ser estatica o usando la instancia de la clase? da igual
+
+5. Como se permite que el tracker pueda tener varias persistences?
+
+6.Hay que elegir una en concreto durante la ejecucion o que coexistan simultaneamente? al menos una, pero debe permitir más a la vez.
+
+7. El hilo tiene una condicion de parada usando un booleano, es esto eLeGhante? ta fino.
+
+
+  

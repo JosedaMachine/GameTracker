@@ -14,7 +14,7 @@ namespace GameTracker
         {
             fileData = "";
 
-            serializer = new JsonSerializer();
+            serializer = new CSVSerializer();
         }
 
         public void send(TrackerEvent e)
