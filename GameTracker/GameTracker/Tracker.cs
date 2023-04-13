@@ -42,10 +42,11 @@ namespace GameTracker
             //TODO: Esto es una mierda hay que sacarlo de aqui.
             persistence = new FilePersistence();
 
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
+            currentTime = DateTime.UtcNow;
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            Console.WriteLine(unixTime);
 
-            commonContent_ = new CommonContent(gameID_, gameSession_, user_, stopwatch.ElapsedMilliseconds);
+            commonContent_ = new CommonContent(gameID_, gameSession_, user_, 0);
 
             return true;
         }
@@ -67,13 +68,6 @@ namespace GameTracker
 
         public void Persist() {
             //Deberia ser en una hebra distinta el volcado???
-
-
-            //TrackerEvent result;
-            //if (!queue_.TryPeek(out result))
-            //{
-            //    Console.WriteLine("CQ: TryPeek failed when it should have succeeded");
-            //}
             persistence.flush();
         }
         
@@ -107,6 +101,10 @@ namespace GameTracker
 
         public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
         {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            
+            commonContent_.time_stamp = unixTime;
+
             ParryInputAfterDeath event_ = new ParryInputAfterDeath(commonContent_);
 
             return event_;
@@ -115,6 +113,10 @@ namespace GameTracker
         // Creates ObtainRedPowerUpEvent
         public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
         {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
             ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(commonContent_);
 
             return event_;
@@ -122,6 +124,11 @@ namespace GameTracker
 
         // Creates initial session event
         public InitSessionEvent CreateInitSessionEvent(){
+            
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
             InitSessionEvent event_ = new InitSessionEvent(commonContent_);
 
             return event_;
@@ -130,6 +137,10 @@ namespace GameTracker
         // Creates initial session event
         public InitLevelEvent CreateInitLevelEvent()
         {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
             InitLevelEvent event_ = new InitLevelEvent(commonContent_);
 
             return event_;
@@ -138,6 +149,10 @@ namespace GameTracker
         // Creates finish session event
         public FinishSessionEvent CreateFinishSessionEvent()
         {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
             FinishSessionEvent event_ = new FinishSessionEvent(commonContent_);
 
             return event_;
@@ -146,6 +161,10 @@ namespace GameTracker
         // Creates finish level event
         public FinishLevelEvent CreateFinishLevelEvent()
         {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
             FinishLevelEvent event_ = new FinishLevelEvent(commonContent_);
 
             return event_;
@@ -154,10 +173,10 @@ namespace GameTracker
         string gameID_, gameSession_, user_;
         ConcurrentQueue<TrackerEvent> queue_;
         private IPersistence persistence;
-        Stopwatch stopwatch;
         Thread dequeueEvents_thread;
         CommonContent commonContent_;
         private bool stop;
+        DateTime currentTime;
     }
 }
 

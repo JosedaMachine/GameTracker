@@ -14,7 +14,6 @@ class Program
 
         // Ruta del archivo de texto
         string filePath = @"U:\hlocal\UAj\events.txt";
-        string pruebitaSergioPrueba = @"U:\hlocal\UAj\events.txt";
         StreamWriter writer = new StreamWriter(filePath);
         // Escribir texto en archivo de texto
 
@@ -51,34 +50,6 @@ class Program
 
     static void Main()
     {
-
-
-        //CommonContent commonContent = new CommonContent();
-        //commonContent.sessionID = "12";
-        //commonContent.gameID = "Apex";
-        //commonContent.time_stamp = 1123132132;
-        //commonContent.userID = "Joseda";
-
-        //InitSessionEvent initS_E = new InitSessionEvent(commonContent);
-        //InitlLevelEvent initL_E = new InitlLevelEvent(commonContent);
-        //FinishlLevelEvent finishL_E = new FinishlLevelEvent(commonContent);
-        //FinishSessionEvent finishS_E = new FinishSessionEvent(commonContent);
-
-        //string json = initS_E.toJSON();
-        //json = json + initL_E.toJSON();
-        //json = json + finishL_E.toJSON();
-        //json = json + finishS_E.toJSON();
-
-        //string csv = initS_E.toCSV();
-        //csv = csv + initL_E.toCSV();
-        //csv = csv + finishL_E.toCSV();
-        //csv = csv + finishS_E.toCSV();
-
-
-        //Console.WriteLine(json);
-        //Console.WriteLine(csv);
-
-
         //Strategy
 
         TrackerSystem.Init("Game", "1", "Player");
@@ -94,10 +65,9 @@ class Program
 
         //Inicio de sesion
 
-
-
         InitSessionEvent initE = tracker.CreateInitSessionEvent();
         tracker.trackEvent(initE);
+
         while (true)
         {
             string input = Console.ReadLine();
