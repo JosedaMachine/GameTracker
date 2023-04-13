@@ -50,16 +50,26 @@ class Program
 
     static void Main()
     {
+        //El FilePersistence deberia poder tener multiples serializadores??? No, no? no se ah
+
+        //Parece que el timestamp es el mismo...
+
+        //No deberia sobreescribir en el fichero
+
         //Strategy
+        ISerializer serializerCSV = new CSVSerializer();
+        IPersistence filePersistence = new FilePersistence(ref serializerCSV);
 
-        TrackerSystem.Init("Game", "1", "Player");
+        TrackerSystem.Init("Game", "1", "Player", ref filePersistence);
 
-        
         TrackerSystem tracker = TrackerSystem.GetInstance();
+
+        ISerializer serializerJSON = new JsonSerializer();
+        IPersistence filePersistenceCopy = new FilePersistence(ref serializerJSON);
+
+        tracker.AddPersistence(ref filePersistenceCopy);
+
         tracker.Start();
-
-        IPersistence persistence = new FilePersistence();
-
 
         Console.WriteLine("Introduce números para sumar (0 para salir):");
 

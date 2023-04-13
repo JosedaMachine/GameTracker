@@ -12,6 +12,20 @@ namespace GameTracker
 {
     class TrackerSystem
     {
+        private List<IPersistence> persistencesList = null;
+
+        string gameID_, gameSession_, user_;
+        
+        private ConcurrentQueue<TrackerEvent> queue_;
+        
+        private Thread dequeueEvents_thread;
+        
+        private CommonContent commonContent_;
+        
+        private bool stop_;
+        
+        private DateTime currentTime_;
+
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
 
@@ -19,14 +33,12 @@ namespace GameTracker
 
         }
 
-
-
-        public static bool Init(string gameID, string gameSession, string user) {
+        public static bool Init(string gameID, string gameSession, string user, ref IPersistence persistence) {
             Debug.Assert(instance == null);
 
             instance = new TrackerSystem();
 
-            if (!instance.initPrivate(gameID, gameSession, user)) {
+            if (!instance.initPrivate(gameID, gameSession, user, ref persistence)) {
                 instance = null;
                 return false;
             }
@@ -34,16 +46,17 @@ namespace GameTracker
             return true;
         }
 
-        private bool initPrivate(string gameID, string gameSession, string user) {
+        private bool initPrivate(string gameID, string gameSession, string user, ref IPersistence persistence) {
             gameID_ = gameID;
             gameSession_ = gameSession;
             user_ = user;
 
-            //TODO: Esto es una mierda hay que sacarlo de aqui.
-            persistence = new FilePersistence();
+            persistencesList = new List<IPersistence>();
 
-            currentTime = DateTime.UtcNow;
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            AddPersistence(ref persistence);
+
+            currentTime_ = DateTime.UtcNow;
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
             Console.WriteLine(unixTime);
 
             commonContent_ = new CommonContent(gameID_, gameSession_, user_, 0);
@@ -51,6 +64,7 @@ namespace GameTracker
             return true;
         }
 
+        //release y relese private se hace un Dipose? TODO
 
         public void Start() {
             queue_ = new ConcurrentQueue<TrackerEvent>();
@@ -59,27 +73,33 @@ namespace GameTracker
             dequeueEvents_thread.Start();
         }
 
-        public void Stop()
-        {
-            stop = true;
+        public void Stop(){
+            stop_ = true;
             dequeueEvents_thread.Join();
-            
         }
 
         public void Persist() {
             //Deberia ser en una hebra distinta el volcado???
-            persistence.flush();
+            foreach (IPersistence persistence in persistencesList){
+                persistence.flush();
+            }
+        }
+
+        public void AddPersistence(ref IPersistence persistence){
+            persistencesList.Add((IPersistence)persistence);
         }
         
         //Consumer.
         private void SerializeEvents()
         {
-            while (queue_.Count > 0 || !stop)
+            while (queue_.Count > 0 || !stop_)
             {
                 TrackerEvent e;
                 if(queue_.TryDequeue(out e))
                 {
-                    persistence.send(e);
+                    foreach (IPersistence persistence in persistencesList){
+                        persistence.send(e);
+                    }
                 }
             }
         }
@@ -101,7 +121,7 @@ namespace GameTracker
 
         public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
         {
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
             
             commonContent_.time_stamp = unixTime;
 
@@ -113,7 +133,7 @@ namespace GameTracker
         // Creates ObtainRedPowerUpEvent
         public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
         {
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
             commonContent_.time_stamp = unixTime;
 
@@ -125,7 +145,7 @@ namespace GameTracker
         // Creates initial session event
         public InitSessionEvent CreateInitSessionEvent(){
             
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
             commonContent_.time_stamp = unixTime;
 
@@ -137,7 +157,7 @@ namespace GameTracker
         // Creates initial session event
         public InitLevelEvent CreateInitLevelEvent()
         {
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
             commonContent_.time_stamp = unixTime;
 
@@ -149,7 +169,7 @@ namespace GameTracker
         // Creates finish session event
         public FinishSessionEvent CreateFinishSessionEvent()
         {
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
             commonContent_.time_stamp = unixTime;
 
@@ -161,7 +181,7 @@ namespace GameTracker
         // Creates finish level event
         public FinishLevelEvent CreateFinishLevelEvent()
         {
-            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
             commonContent_.time_stamp = unixTime;
 
@@ -169,14 +189,6 @@ namespace GameTracker
 
             return event_;
         }
-
-        string gameID_, gameSession_, user_;
-        ConcurrentQueue<TrackerEvent> queue_;
-        private IPersistence persistence;
-        Thread dequeueEvents_thread;
-        CommonContent commonContent_;
-        private bool stop;
-        DateTime currentTime;
     }
 }
 

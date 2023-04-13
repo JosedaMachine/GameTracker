@@ -5,21 +5,23 @@ namespace GameTracker
 {
     internal class FilePersistence : IPersistence
     {
-        ISerializer serializer;
-        const string path = "";
+        private ISerializer serializer_;
+        private string path_ = "";
 
-        string fileData;
+        private string fileData_;
 
-        public FilePersistence()
+        public FilePersistence(ref ISerializer serializer)
         {
-            fileData = "";
+            fileData_ = "";
 
-            serializer = new CSVSerializer();
+            serializer_ = serializer;
         }
+
+        public void setOutPutPath(string path) => path_ = path;
 
         public void send(TrackerEvent e)
         {
-           fileData += serializer.serialize(e);
+           fileData_ += serializer_.serialize(e);
         }
 
         public void flush()
@@ -27,17 +29,17 @@ namespace GameTracker
             try
             {
                 // Abrir el archivo en modo append
-                StreamWriter outputFile = new StreamWriter(path + serializer.getName(), true);
+                StreamWriter outputFile = new StreamWriter(path_ + serializer_.getName(), true);
 
                 //Escribir contenido
-                outputFile.WriteLine(fileData);
+                outputFile.WriteLine(fileData_);
 
                 Console.WriteLine("Fichero escrito");
 
                 outputFile.Close();
 
                 //Reestablecer cadena que guarda los eventos
-                fileData = "";
+                fileData_ = "";
             }
             catch (System.IO.IOException e)
             {
