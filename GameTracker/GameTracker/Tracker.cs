@@ -165,18 +165,6 @@ namespace GameTracker
             return objeto;
         }
 
-        // Creates die from bullet event
-        public DieFromBulletEvent CreateDieFromBulletEvent()
-        {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-            commonContent_.time_stamp = unixTime;
-
-            DieFromBulletEvent event_ = new DieFromBulletEvent(commonContent_);
-
-            return event_;
-        }
-
         private long getCurrTime(){
             currentTime_ = DateTime.UtcNow;
             long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
