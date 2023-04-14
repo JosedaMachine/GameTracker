@@ -189,6 +189,26 @@ namespace GameTracker
 
             return event_;
         }
+
+        // Creates die from bullet event
+        public DieFromBulletEvent CreateDieFromBulletEvent()
+        {
+            long unixTime = ((DateTimeOffset)currentTime).ToUnixTimeSeconds();
+
+            commonContent_.time_stamp = unixTime;
+
+            DieFromBulletEvent event_ = new DieFromBulletEvent(commonContent_);
+
+            return event_;
+        }
+
+        string gameID_, gameSession_, user_;
+        ConcurrentQueue<TrackerEvent> queue_;
+        private IPersistence persistence;
+        Thread dequeueEvents_thread;
+        CommonContent commonContent_;
+        private bool stop;
+        DateTime currentTime;
     }
 }
 
