@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace GameTracker
@@ -26,6 +27,7 @@ namespace GameTracker
 
         public void flush()
         {
+            //Console.WriteLine("Flushing");
             try
             {
                 // Abrir el archivo en modo append
