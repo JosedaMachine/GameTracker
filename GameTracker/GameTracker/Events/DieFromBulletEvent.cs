@@ -7,7 +7,7 @@ namespace GameTracker
     internal class DieFromBulletEvent : TrackerEvent
     {
         short level;
-        bool parryOnCooldown;
+        float timeAfterParry;
         public DieFromBulletEvent(CommonContent common) : base(common)
         {
             eventType_ = "Die From Bullet";
@@ -31,7 +31,7 @@ namespace GameTracker
 
             //Add data
             data["Level"] = level;
-            data["Parry_On_Cooldown"] = parryOnCooldown;
+            data["Parry_On_Cooldown"] = timeAfterParry;
 
             // Serialize collection with new data
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
@@ -46,9 +46,9 @@ namespace GameTracker
             level = level_;
         }
 
-        public void setParryOnCooldown(bool parryOC_)
+        public void setTimeAfterParryFailed(float timeAP_)
         {
-            parryOnCooldown = parryOC_;
+            timeAfterParry = timeAP_;
         }
     }
 }
