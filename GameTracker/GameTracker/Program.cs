@@ -52,8 +52,6 @@ class Program
     {
         //El FilePersistence deberia poder tener multiples serializadores??? No, no? no se ah
 
-        //Parece que el timestamp es el mismo...
-
         //No deberia sobreescribir en el fichero
 
         //Strategy
@@ -108,8 +106,11 @@ class Program
                         break;
                 }
 
+
                 if (e != null)
                     tracker.trackEvent(e);
+                
+                tracker.Persist();
 
                 if (number == 0)
                     break;

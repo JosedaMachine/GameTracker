@@ -32,7 +32,7 @@ namespace GameTracker
                 StreamWriter outputFile = new StreamWriter(path_ + serializer_.getName(), true);
 
                 //Escribir contenido
-                outputFile.WriteLine(fileData_);
+                outputFile.Write(fileData_);
 
                 Console.WriteLine("Fichero escrito");
 
