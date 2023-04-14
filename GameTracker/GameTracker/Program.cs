@@ -60,7 +60,7 @@ class Program
         ISerializer serializerCSV = new CSVSerializer();
         IPersistence filePersistence = new FilePersistence(ref serializerCSV);
 
-        TrackerSystem.Init("Game", "1", "Player", ref filePersistence);
+        TrackerSystem.Init("Game", "2", "Player", ref filePersistence);
 
         TrackerSystem tracker = TrackerSystem.GetInstance();
 

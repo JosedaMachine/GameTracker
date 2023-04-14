@@ -87,7 +87,7 @@ namespace GameTracker
         }
 
         public void AddPersistence(ref IPersistence persistence){
-            persistencesList.Add((IPersistence)persistence);
+            persistencesList.Add(persistence);
         }
         
         //Consumer.
@@ -111,86 +111,6 @@ namespace GameTracker
             queue_.Enqueue(event_);
         }
 
-
-        //// Creates ParryEvent
-        //public ParryEvent CreateParryEvent()
-        //{
-        //    ParryEvent event_ = new ParryEvent(commonContent_);
-
-        //    return event_;
-        //}
-
-        //public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
-        //{
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-            
-        //    commonContent_.time_stamp = unixTime;
-
-        //    ParryInputAfterDeath event_ = new ParryInputAfterDeath(commonContent_);
-
-        //    return event_;
-        //}
-        
-        //// Creates ObtainRedPowerUpEvent
-        //public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
-        //{
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-        //    commonContent_.time_stamp = unixTime;
-
-        //    ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(commonContent_);
-
-        //    return event_;
-        //}
-
-        //// Creates initial session event
-        //public InitSessionEvent CreateInitSessionEvent(){
-            
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-        //    commonContent_.time_stamp = unixTime;
-
-        //    InitSessionEvent event_ = new InitSessionEvent(commonContent_);
-
-        //    return event_;
-        //}
-
-        //// Creates initial session event
-        //public InitLevelEvent CreateInitLevelEvent()
-        //{
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-        //    commonContent_.time_stamp = unixTime;
-
-        //    InitLevelEvent event_ = new InitLevelEvent(commonContent_);
-
-        //    return event_;
-        //}
-
-        //// Creates finish session event
-        //public FinishSessionEvent CreateFinishSessionEvent()
-        //{
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-        //    commonContent_.time_stamp = unixTime;
-
-        //    FinishSessionEvent event_ = new FinishSessionEvent(commonContent_);
-
-        //    return event_;
-        //}
-
-        //// Creates finish level event
-        //public FinishLevelEvent CreateFinishLevelEvent()
-        //{
-        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-        //    commonContent_.time_stamp = unixTime;
-
-        //    FinishLevelEvent event_ = new FinishLevelEvent(commonContent_);
-
-        //    return event_;
-        //}
-
         public T CreateEvent<T>(params object[] parametros)
         {
             // Obtén el tipo T
@@ -201,6 +121,7 @@ namespace GameTracker
 
 
             //Asignamos el nuevo tiempo
+            currentTime_ = DateTime.UtcNow;
             long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
             commonContent_.time_stamp = unixTime;
 
