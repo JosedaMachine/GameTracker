@@ -67,6 +67,8 @@ class Program
 
         tracker.AddPersistence(ref filePersistenceCopy);
 
+        tracker.setFrecuencyPersistanceTimeSeconds(3);
+
         tracker.Start();
 
         Console.WriteLine("Introduce números para sumar (0 para salir):");
@@ -106,12 +108,9 @@ class Program
                         break;
                 }
 
-
                 if (e != null)
                     tracker.trackEvent(e);
                 
-                tracker.Persist();
-
                 if (number == 0)
                     break;
 
@@ -133,12 +132,6 @@ class Program
 
         //Volcar el fichero en disco
         tracker.Persist();
-
-        //// Esperar a que se vacíe la cola antes de finalizar
-        //while (!queue.IsEmpty)
-        //{
-        //    Thread.Sleep(100);
-        //}
     }
 
     static void ReadFromQueue()

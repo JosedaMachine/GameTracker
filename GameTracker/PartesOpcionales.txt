@@ -1,0 +1,10 @@
+Documentacion:
+
+Solo cuando la aplicación se pausa/termina. 
+Mediante temporizadores: 
+//asdasa Mediante checkpoints: 
+
+
+Partes Opcionales:
+Hebra de eventos
+

@@ -27,8 +27,14 @@ namespace GameTracker
         
         private DateTime currentTime_;
 
+        private uint frecuencyPersistanceTimeSec_ = 0;
+
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
+
+        public void setFrecuencyPersistanceTimeSeconds(uint time_){
+            frecuencyPersistanceTimeSec_ = time_;
+        }
 
         public TrackerSystem() {
 
@@ -93,8 +99,17 @@ namespace GameTracker
         //Consumer.
         private void SerializeEvents()
         {
+            long lastTime = getCurrTime();
+
             while (queue_.Count > 0 || !stop_)
             {
+                long currTime = getCurrTime();
+                if (currTime - lastTime > frecuencyPersistanceTimeSec_){
+                    Persist();
+
+                    lastTime = currTime;
+                }
+
                 TrackerEvent e;
                 if(queue_.TryDequeue(out e))
                 {
@@ -122,8 +137,7 @@ namespace GameTracker
 
             //Asignamos el nuevo tiempo
             currentTime_ = DateTime.UtcNow;
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-            commonContent_.time_stamp = unixTime;
+            commonContent_.time_stamp = getCurrTime();
 
             //Añadimos el parametro a la posicion inicial
             tiposParametros[0] = commonContent_.GetType(); // Agrega el tipo del primerParámetro al inicio del arreglo
@@ -161,6 +175,13 @@ namespace GameTracker
             DieFromBulletEvent event_ = new DieFromBulletEvent(commonContent_);
 
             return event_;
+        }
+
+        private long getCurrTime(){
+            currentTime_ = DateTime.UtcNow;
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+
+            return unixTime;
         }
     }
 }
