@@ -75,7 +75,7 @@ class Program
 
         //Inicio de sesion
 
-        InitSessionEvent initE = tracker.CreateInitSessionEvent();
+        InitSessionEvent initE = tracker.CreateEvent<InitSessionEvent>();
         tracker.trackEvent(initE);
 
         while (true)
@@ -89,18 +89,19 @@ class Program
                 {
                     case 1:
                         //Inicio de partida
-                        e = tracker.CreateInitLevelEvent();
+                        e = tracker.CreateEvent<InitLevelEvent>();
                         break;
                     case 2:
                         //Lanzar parry
-                        e = tracker.CreateParryEvent();
+
+                        e = tracker.CreateEvent<ParryEvent>();
                         break;
                     case 3:
                         //Obtener powerUP rojo
-                        e = tracker.CreateObtainRedPowerUpEvent();
+                        e = tracker.CreateEvent<ObtainRedPowerUpEvent>();
                         break;
                     case 4:
-                        e = tracker.CreateFinishLevelEvent();
+                        e = tracker.CreateEvent<FinishLevelEvent>();
                         //Final de partida
                         break;
                     default:
@@ -123,7 +124,7 @@ class Program
         }
 
         //Final de sesion
-        FinishSessionEvent finishE = tracker.CreateFinishSessionEvent();
+        FinishSessionEvent finishE = tracker.CreateEvent<FinishSessionEvent>();
         tracker.trackEvent(finishE);
 
         //Parar

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace GameTracker
 {
@@ -111,83 +112,122 @@ namespace GameTracker
         }
 
 
-        // Creates ParryEvent
-        public ParryEvent CreateParryEvent()
-        {
-            ParryEvent event_ = new ParryEvent(commonContent_);
+        //// Creates ParryEvent
+        //public ParryEvent CreateParryEvent()
+        //{
+        //    ParryEvent event_ = new ParryEvent(commonContent_);
 
-            return event_;
-        }
+        //    return event_;
+        //}
 
-        public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
-        {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+        //public ParryInputAfterDeath CreateParryInputAfterDeathEvent()
+        //{
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
             
-            commonContent_.time_stamp = unixTime;
+        //    commonContent_.time_stamp = unixTime;
 
-            ParryInputAfterDeath event_ = new ParryInputAfterDeath(commonContent_);
+        //    ParryInputAfterDeath event_ = new ParryInputAfterDeath(commonContent_);
 
-            return event_;
-        }
+        //    return event_;
+        //}
         
-        // Creates ObtainRedPowerUpEvent
-        public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
-        {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+        //// Creates ObtainRedPowerUpEvent
+        //public ObtainRedPowerUpEvent CreateObtainRedPowerUpEvent()
+        //{
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
-            commonContent_.time_stamp = unixTime;
+        //    commonContent_.time_stamp = unixTime;
 
-            ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(commonContent_);
+        //    ObtainRedPowerUpEvent event_ = new ObtainRedPowerUpEvent(commonContent_);
 
-            return event_;
-        }
+        //    return event_;
+        //}
 
-        // Creates initial session event
-        public InitSessionEvent CreateInitSessionEvent(){
+        //// Creates initial session event
+        //public InitSessionEvent CreateInitSessionEvent(){
             
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
 
-            commonContent_.time_stamp = unixTime;
+        //    commonContent_.time_stamp = unixTime;
 
-            InitSessionEvent event_ = new InitSessionEvent(commonContent_);
+        //    InitSessionEvent event_ = new InitSessionEvent(commonContent_);
 
-            return event_;
-        }
+        //    return event_;
+        //}
 
-        // Creates initial session event
-        public InitLevelEvent CreateInitLevelEvent()
+        //// Creates initial session event
+        //public InitLevelEvent CreateInitLevelEvent()
+        //{
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+
+        //    commonContent_.time_stamp = unixTime;
+
+        //    InitLevelEvent event_ = new InitLevelEvent(commonContent_);
+
+        //    return event_;
+        //}
+
+        //// Creates finish session event
+        //public FinishSessionEvent CreateFinishSessionEvent()
+        //{
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+
+        //    commonContent_.time_stamp = unixTime;
+
+        //    FinishSessionEvent event_ = new FinishSessionEvent(commonContent_);
+
+        //    return event_;
+        //}
+
+        //// Creates finish level event
+        //public FinishLevelEvent CreateFinishLevelEvent()
+        //{
+        //    long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+
+        //    commonContent_.time_stamp = unixTime;
+
+        //    FinishLevelEvent event_ = new FinishLevelEvent(commonContent_);
+
+        //    return event_;
+        //}
+
+        public T CreateEvent<T>(params object[] parametros)
         {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+            // Obtén el tipo T
+            Type tipo = typeof(T);
 
+            // Verifica si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
+            Type[] tiposParametros = new Type[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
+
+
+            //Asignamos el nuevo tiempo
+            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
             commonContent_.time_stamp = unixTime;
 
-            InitLevelEvent event_ = new InitLevelEvent(commonContent_);
+            //Añadimos el parametro a la posicion inicial
+            tiposParametros[0] = commonContent_.GetType(); // Agrega el tipo del primerParámetro al inicio del arreglo
+            
+            for (int i = 0; i < parametros.Length; i++)
+            {
+                tiposParametros[i + 1] = parametros[i].GetType();
+            }
 
-            return event_;
-        }
+            ConstructorInfo constructor = tipo.GetConstructor(tiposParametros);
+            if (constructor == null)
+            {
+                throw new InvalidOperationException("No se encontró un constructor adecuado para los parámetros proporcionados.");
+            }
 
-        // Creates finish session event
-        public FinishSessionEvent CreateFinishSessionEvent()
-        {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
+            // Crea una nueva instancia del objeto T con los parámetros proporcionados
+            object[] parametrosCompletos = new object[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
+            parametrosCompletos[0] = commonContent_; // Agrega el primerParámetro al inicio del arreglo
+            for (int i = 0; i < parametros.Length; i++)
+            {
+                parametrosCompletos[i + 1] = parametros[i];
+            }
 
-            commonContent_.time_stamp = unixTime;
-
-            FinishSessionEvent event_ = new FinishSessionEvent(commonContent_);
-
-            return event_;
-        }
-
-        // Creates finish level event
-        public FinishLevelEvent CreateFinishLevelEvent()
-        {
-            long unixTime = ((DateTimeOffset)currentTime_).ToUnixTimeSeconds();
-
-            commonContent_.time_stamp = unixTime;
-
-            FinishLevelEvent event_ = new FinishLevelEvent(commonContent_);
-
-            return event_;
+            T objeto = (T)constructor.Invoke(parametrosCompletos);
+            return objeto;
         }
 
         // Creates die from bullet event
