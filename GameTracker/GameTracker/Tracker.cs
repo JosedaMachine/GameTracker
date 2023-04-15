@@ -78,9 +78,17 @@ namespace GameTracker
 
             dequeueEvents_thread = new Thread(SerializeEvents);
             dequeueEvents_thread.Start();
+
+            InitSessionEvent ISE = CreateEvent<InitSessionEvent>();
+            trackEvent(ISE);
         }
 
         public void Stop(){
+            FinishSessionEvent FSE = CreateEvent<FinishSessionEvent>();
+            trackEvent(FSE);
+
+            SerializeEvents();
+
             stop_ = true;
             dequeueEvents_thread.Join();
         }
