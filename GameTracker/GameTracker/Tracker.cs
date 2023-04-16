@@ -87,9 +87,10 @@ namespace GameTracker
             FinishSessionEvent FSE = CreateEvent<FinishSessionEvent>();
             trackEvent(FSE);
 
-            SerializeEvents();
-
             stop_ = true;
+            SerializeEvents();
+            Persist();
+
             dequeueEvents_thread.Join();
         }
 
