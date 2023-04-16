@@ -32,6 +32,11 @@ namespace GameTracker
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
 
+        /// <summary>
+        /// Sets frecuency time to persist event data. If time is 0, it 
+        /// will persist only when Tracker stops, or when Persist() is called.
+        /// </summary>
+        /// <param name="time_"></param>
         public void setFrecuencyPersistanceTimeSeconds(uint time_){
             frecuencyPersistanceTimeSec_ = time_;
         }
@@ -40,6 +45,14 @@ namespace GameTracker
 
         }
 
+        /// <summary>
+        /// Initializes Tracker with given parameters and a initial persistance method.
+        /// </summary>
+        /// <param name="gameID"></param>
+        /// <param name="gameSession"></param>
+        /// <param name="user"></param>
+        /// <param name="persistence"></param>
+        /// <returns></returns>
         public static bool Init(string gameID, string gameSession, string user, ref IPersistence persistence) {
             Debug.Assert(instance == null);
 
@@ -71,36 +84,68 @@ namespace GameTracker
             return true;
         }
 
-        //release y relese private se hace un Dipose? TODO
 
-        public void Start() {
+        /// <summary>
+        /// Starts new thread to process and track events.
+        /// </summary>
+        /// <returns>True if starting succeed. Otherwise, false since it was called twice.</returns>
+        public bool Start() {
+
+            if(queue_ != null)
+                return false;
+
             queue_ = new ConcurrentQueue<TrackerEvent>();
 
             dequeueEvents_thread = new Thread(SerializeEvents);
             dequeueEvents_thread.Start();
 
             InitSessionEvent ISE = CreateEvent<InitSessionEvent>();
-            trackEvent(ISE);
+            
+            if(ISE != null)
+                trackEvent(ISE);
+
+            return true;
         }
 
-        public void Stop(){
+        /// <summary>
+        /// Stops the thread and persists remaining events.
+        /// </summary>
+        /// <returns>True if stoping succeed. Otherwise, false since starts wasn't called</returns>
+        public bool Stop(){
+
+            if (queue_ == null)
+                return false;
+
+
             FinishSessionEvent FSE = CreateEvent<FinishSessionEvent>();
-            trackEvent(FSE);
+            
+            if(FSE != null)
+                trackEvent(FSE);
 
             stop_ = true;
             SerializeEvents();
             Persist();
 
             dequeueEvents_thread.Join();
+
+            queue_ = null;
+
+            return true;
         }
 
+        /// <summary>
+        /// Persists enqueued events.
+        /// </summary>
         public void Persist() {
-            //Deberia ser en una hebra distinta el volcado???
             foreach (IPersistence persistence in persistencesList){
                 persistence.flush();
             }
         }
 
+        /// <summary>
+        /// Adds a new persistance method that coexist simultaneously with others. 
+        /// </summary>
+        /// <param name="persistence"></param>
         public void AddPersistence(ref IPersistence persistence){
             persistencesList.Add(persistence);
         }
@@ -113,7 +158,7 @@ namespace GameTracker
             while (queue_.Count > 0 || !stop_)
             {
                 long currTime = getCurrTime();
-                if (currTime - lastTime > frecuencyPersistanceTimeSec_){
+                if (frecuencyPersistanceTimeSec_ > 0 && currTime - lastTime > frecuencyPersistanceTimeSec_){
                     Persist();
 
                     lastTime = currTime;
@@ -129,18 +174,33 @@ namespace GameTracker
             }
         }
 
-        //Enqueues event
+        /// <summary>
+        /// Enqueues event. Event must not be null.
+        /// </summary>
+        /// <param name="event_"></param>
         public void trackEvent(TrackerEvent event_)
         {
             queue_.Enqueue(event_);
         }
 
-        public T CreateEvent<T>(params object[] parametros)
+
+        /// <summary>
+        /// Creates an custom event that must derivate from TrackerEvent
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parametros"> event custom parameters</param>
+        /// <returns>instance of the event</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public T? CreateEvent<T>(params object[] parametros)
         {
-            // Obtén el tipo T
+            if (!typeof(T).IsSubclassOf(typeof(TrackerEvent)))
+                return default(T);
+
+
+            // Obtener el tipo T
             Type tipo = typeof(T);
 
-            // Verifica si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
+            // Verificamos si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
             Type[] tiposParametros = new Type[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
 
 
@@ -182,50 +242,3 @@ namespace GameTracker
         }
     }
 }
-
-
-
-//class CQ_EnqueueDequeuePeek
-//{
-//    // Demonstrates:
-//    // ConcurrentQueue<T>.Enqueue()
-//    // ConcurrentQueue<T>.TryPeek()
-//    // ConcurrentQueue<T>.TryDequeue()
-//    static void Main()
-//    {
-//        // Construct a ConcurrentQueue.
-//        ConcurrentQueue<int> cq = new ConcurrentQueue<int>();
-
-//        // Populate the queue.
-//        for (int i = 0; i < 10000; i++)
-//        {
-//            cq.Enqueue(i);
-//        }
-
-//        // Peek at the first element.
-//        int result;
-//        if (!cq.TryPeek(out result))
-//        {
-//            Console.WriteLine("CQ: TryPeek failed when it should have succeeded");
-//        }
-//        else if (result != 0)
-//        {
-//            Console.WriteLine("CQ: Expected TryPeek result of 0, got {0}", result);
-//        }
-
-//        int outerSum = 0;
-//        // An action to consume the ConcurrentQueue.
-//        Action action = () =>
-//        {
-//            int localSum = 0;
-//            int localValue;
-//            while (cq.TryDequeue(out localValue)) localSum += localValue;
-//            Interlocked.Add(ref outerSum, localSum);
-//        };
-
-//        // Start 4 concurrent consuming actions.
-//        Parallel.Invoke(action, action, action, action);
-
-//        Console.WriteLine("outerSum = {0}, should be 49995000", outerSum);
-//    }
-//}

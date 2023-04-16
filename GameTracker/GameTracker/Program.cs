@@ -76,7 +76,9 @@ class Program
         //Inicio de sesion
 
         InitSessionEvent initE = tracker.CreateEvent<InitSessionEvent>();
-        tracker.trackEvent(initE);
+
+        if(initE != null)
+            tracker.trackEvent(initE);
 
         while (true)
         {
@@ -125,7 +127,9 @@ class Program
 
         //Final de sesion
         FinishSessionEvent finishE = tracker.CreateEvent<FinishSessionEvent>();
-        tracker.trackEvent(finishE);
+        
+        if(finishE != null)
+            tracker.trackEvent(finishE);
 
         //Parar
         tracker.Stop();
