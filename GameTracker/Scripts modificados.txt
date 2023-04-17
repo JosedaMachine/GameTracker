@@ -1,0 +1,13 @@
+Para instrumentalizar el juego, hemos creado una serie de scripts y modificado otros:
+
+Los scripts nuevos están en la carpeta _GameTrackerScripts y son:
+-DeathBeforeParryEvent
+-EventoBloqueo
+-ParryEvent_AfterDeath
+
+Los scripts modificados son:
+-ActivatePowerUpRed
+-GameManager
+-Bloqueo
+-MainMenu (Método Quit())
+-Death
