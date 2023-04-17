@@ -18,7 +18,7 @@ namespace GameTracker
             //Base information
             string format = base.toCSV();
 
-            return format + "\n";
+            return format+","+ level + ","+ timeAfterDeath + "\n";
         }
 
         public override string toJSON()
@@ -31,6 +31,7 @@ namespace GameTracker
 
             //Add data
             data["Level"] = level;
+            data["TimeAfterDeath"] = timeAfterDeath;
 
             // Serialize collection with new data
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });

@@ -17,7 +17,7 @@ namespace GameTracker
             //Base information
             string format = base.toCSV();
 
-            return format + "\n";
+            return format+","+ level + "\n";
         }
 
         public override string toJSON()

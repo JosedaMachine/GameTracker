@@ -10,6 +10,7 @@ namespace GameTracker
 {
     internal class InitLevelEvent : TrackerEvent
     {
+        short level;
         public InitLevelEvent(CommonContent common) : base(common){
             eventType_ = "Init Level";
         }
@@ -18,10 +19,7 @@ namespace GameTracker
         {
             string format = base.toCSV();
 
-            //formatear los datos
-            format += ",Satanic Alberto";
-
-            return  format + "\n";
+            return  format+","+ level + "\n";
         }
 
         public override string toJSON()
@@ -33,7 +31,7 @@ namespace GameTracker
             var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(format);
 
             //Add data
-            data["Level"] = "Satanic Alberto";
+            data["Level"] = level;
 
             // Serialize collection with new data
             string newCollection = JsonConvert.SerializeObject(data, new JsonSerializerSettings { Formatting = Formatting.Indented });
@@ -41,6 +39,10 @@ namespace GameTracker
             newCollection += ",\n";
 
             return newCollection;
+        }
+        public void setLevel(short level_)
+        {
+            level = level_;
         }
 
     }
