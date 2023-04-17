@@ -32,7 +32,7 @@ namespace GameTracker
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
 
-        private Dictionary<string, bool> mapa = new Dictionary<string, bool>();
+        private Dictionary<string, bool> eventsTracking = new Dictionary<string, bool>();
 
         /// <summary>
         /// Sets frecuency time to persist event data. If time is 0, it 
@@ -148,7 +148,12 @@ namespace GameTracker
             Type eventClass = typeof(T);
 
             string eventType = eventClass.Name;
-            mapa.Add(eventType, isTracked);
+
+            if (eventsTracking.ContainsKey(eventType)){
+                eventsTracking[eventType] = isTracked;
+            }  
+            else
+                eventsTracking.Add(eventType, isTracked);
 
             return true;
         }
@@ -194,7 +199,7 @@ namespace GameTracker
                     bool isTracked;
                         
                     //Si se ha definido que sea rastreado, se inspecciona su valor
-                    if (mapa.TryGetValue(eventType, out isTracked))
+                    if (eventsTracking.TryGetValue(eventType, out isTracked))
                     {
                         if (isTracked)
                         {
@@ -237,9 +242,7 @@ namespace GameTracker
             // Obtener el tipo T
             Type tipo = typeof(T);
 
-            // Verificamos si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
             Type[] tiposParametros = new Type[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
-
 
             //Asignamos el nuevo tiempo
             currentTime_ = DateTime.UtcNow;
@@ -253,11 +256,11 @@ namespace GameTracker
                 tiposParametros[i + 1] = parametros[i].GetType();
             }
 
+            // Verificamos si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
             ConstructorInfo constructor = tipo.GetConstructor(tiposParametros);
             if (constructor == null)
-            {
-                throw new InvalidOperationException("No se encontró un constructor adecuado para los parámetros proporcionados.");
-            }
+                //No se encontró un constructor adecuado para los parámetros proporcionados
+                return default(T); 
 
             // Crea una nueva instancia del objeto T con los parámetros proporcionados
             object[] parametrosCompletos = new object[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
