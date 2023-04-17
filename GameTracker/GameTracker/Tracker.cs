@@ -32,7 +32,7 @@ namespace GameTracker
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
 
-        private Dictionary<string, bool> mapa = new Dictionary<string, bool>();
+        private Dictionary<string, bool> eventsTracking = new Dictionary<string, bool>();
 
         /// <summary>
         /// Sets frecuency time to persist event data. If time is 0, it 
@@ -148,7 +148,12 @@ namespace GameTracker
             Type eventClass = typeof(T);
 
             string eventType = eventClass.Name;
-            mapa.Add(eventType, isTracked);
+
+            if (eventsTracking.ContainsKey(eventType)){
+                eventsTracking[eventType] = isTracked;
+            }  
+            else
+                eventsTracking.Add(eventType, isTracked);
 
             return true;
         }
@@ -194,7 +199,7 @@ namespace GameTracker
                     bool isTracked;
                         
                     //Si se ha definido que sea rastreado, se inspecciona su valor
-                    if (mapa.TryGetValue(eventType, out isTracked))
+                    if (eventsTracking.TryGetValue(eventType, out isTracked))
                     {
                         if (isTracked)
                         {
