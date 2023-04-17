@@ -242,9 +242,7 @@ namespace GameTracker
             // Obtener el tipo T
             Type tipo = typeof(T);
 
-            // Verificamos si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
             Type[] tiposParametros = new Type[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
-
 
             //Asignamos el nuevo tiempo
             currentTime_ = DateTime.UtcNow;
@@ -258,11 +256,11 @@ namespace GameTracker
                 tiposParametros[i + 1] = parametros[i].GetType();
             }
 
+            // Verificamos si el tipo T tiene un constructor que coincida con la cantidad de parámetros recibidos
             ConstructorInfo constructor = tipo.GetConstructor(tiposParametros);
             if (constructor == null)
-            {
-                throw new InvalidOperationException("No se encontró un constructor adecuado para los parámetros proporcionados.");
-            }
+                //No se encontró un constructor adecuado para los parámetros proporcionados
+                return default(T); 
 
             // Crea una nueva instancia del objeto T con los parámetros proporcionados
             object[] parametrosCompletos = new object[parametros.Length + 1]; // Aumenta el tamaño del arreglo en 1 para incluir el primerParámetro
