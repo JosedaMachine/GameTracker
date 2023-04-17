@@ -32,6 +32,8 @@ namespace GameTracker
         private static TrackerSystem instance = null;
         public static TrackerSystem GetInstance() => instance;
 
+        private Dictionary<string, bool> mapa = new Dictionary<string, bool>();
+
         /// <summary>
         /// Sets frecuency time to persist event data. If time is 0, it 
         /// will persist only when Tracker stops, or when Persist() is called.
@@ -134,6 +136,24 @@ namespace GameTracker
         }
 
         /// <summary>
+        /// Sets an event to be tracked or not.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="isTracked"></param>
+        /// <returns>True if T is subclass of TrackerEvent. Otherwise, false.</returns>
+        public bool setEventToBeTracked<T>(bool isTracked){
+            if (!typeof(T).IsSubclassOf(typeof(TrackerEvent)))
+                return false;
+
+            Type eventClass = typeof(T);
+
+            string eventType = eventClass.Name;
+            mapa.Add(eventType, isTracked);
+
+            return true;
+        }
+
+        /// <summary>
         /// Persists enqueued events.
         /// </summary>
         public void Persist() {
@@ -165,10 +185,27 @@ namespace GameTracker
                 }
 
                 TrackerEvent e;
-                if(queue_.TryDequeue(out e))
-                {
-                    foreach (IPersistence persistence in persistencesList){
-                        persistence.send(e);
+                //Usamos Reflection para obtener la llamada al metodo eventType estatico del evento en cuestion.
+                if(queue_.TryDequeue(out e)){
+                    Type eventClass = e.GetType();
+
+                    string eventType = eventClass.Name;
+
+                    bool isTracked;
+                        
+                    //Si se ha definido que sea rastreado, se inspecciona su valor
+                    if (mapa.TryGetValue(eventType, out isTracked))
+                    {
+                        if (isTracked)
+                        {
+                            foreach (IPersistence persistence in persistencesList)
+                                persistence.send(e);
+                        }
+                    }
+                    else //Si no esta definido, se rastrea de todas formas.
+                    {
+                        foreach (IPersistence persistence in persistencesList)
+                            persistence.send(e);
                     }
                 }
             }

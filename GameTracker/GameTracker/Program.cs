@@ -50,8 +50,6 @@ class Program
 
     static void Main()
     {
-        //El FilePersistence deberia poder tener multiples serializadores??? No, no? no se ah
-
         //No deberia sobreescribir en el fichero
 
         //Strategy
@@ -71,14 +69,12 @@ class Program
 
         tracker.Start();
 
+        tracker.setEventToBeTracked<InitLevelEvent>(false);
+        tracker.setEventToBeTracked<FinishLevelEvent>(false);
+        tracker.setEventToBeTracked<ParryEvent>(false);
+
+
         Console.WriteLine("Introduce números para sumar (0 para salir):");
-
-        //Inicio de sesion
-
-        InitSessionEvent initE = tracker.CreateEvent<InitSessionEvent>();
-
-        if(initE != null)
-            tracker.trackEvent(initE);
 
         while (true)
         {
@@ -95,7 +91,6 @@ class Program
                         break;
                     case 2:
                         //Lanzar parry
-
                         e = tracker.CreateEvent<ParryEvent>();
                         break;
                     case 3:
@@ -124,12 +119,6 @@ class Program
                 Console.WriteLine("¡Por favor, introduce un número válido!");
             }
         }
-
-        //Final de sesion
-        FinishSessionEvent finishE = tracker.CreateEvent<FinishSessionEvent>();
-        
-        if(finishE != null)
-            tracker.trackEvent(finishE);
 
         //Parar
         tracker.Stop();

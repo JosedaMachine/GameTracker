@@ -8,7 +8,7 @@ namespace GameTracker
 {
     class JsonSerializer : ISerializer
     {
-        private string name_ = "";
+        private string name_ = "data.json";
         string ISerializer.serialize(TrackerEvent e)
         {
             return e.toJSON();
